@@ -1,21 +1,26 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.*;
 
 public class Main {
     public static void main(String[] args) {
-        List<Thread> threadList = new ArrayList<>();
+        ExecutorService executorService = Executors.newFixedThreadPool((Runtime.getRuntime().availableProcessors()));
 
+        List<Callable<Integer>> callableList = new ArrayList<>();
         for (int a = 1; a < 5; a++) {
-            threadList.add(new Thread(new MyThread(), "Я поток " + a));
+            callableList.add(new MyCallable());
         }
-        threadList.forEach(Thread::start);
 
         try {
-            Thread.sleep(10000);
-            System.out.println("Завершаю все потоки");
-            threadList.forEach(Thread::interrupt);
-        } catch (InterruptedException e) {
-            return;
+
+            Integer i = executorService.invokeAny(callableList);
+            System.out.println(i);
+
+            executorService.shutdown();
+
+
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
         }
 
     }
