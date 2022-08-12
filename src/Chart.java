@@ -1,5 +1,6 @@
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
+import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
@@ -10,12 +11,15 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 
 public class Chart extends JFrame {
+    private JFreeChart lineChart;
 
     public Chart(String applicationTitle, String chartTitle) {
         super(applicationTitle);
-        JFreeChart lineChart = ChartFactory.createLineChart(
+        lineChart = ChartFactory.createLineChart(
                 chartTitle,
                 "arraySize", "Time, ms",
                 createDataset(),
@@ -81,6 +85,7 @@ public class Chart extends JFrame {
         }
 
         dataset.addSeries(multithreading);
+
 
         return dataset;
     }

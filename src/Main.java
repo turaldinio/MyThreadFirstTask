@@ -5,7 +5,7 @@ import java.util.concurrent.*;
 
 public class Main {
 
-    public static void main(String[] args) throws ExecutionException, InterruptedException {
+    public static void main(String[] args) {
         Chart chart = new Chart(
                 "visualization",
                 "Single-thread vs multithreading");
@@ -13,6 +13,7 @@ public class Main {
         chart.pack();
         chart.setVisible(true);
         chart.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
 
 
     }
@@ -56,7 +57,7 @@ public class Main {
         System.out.println("Многопоточная программа Callable:");
 
 
-        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         Future<Integer> future = executorService.submit(() -> sum(array));
         Future<Double> doubleFuture = executorService.submit(() -> arithmeticMean(array));
 
