@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.*;
@@ -13,7 +14,15 @@ public class Main {
         System.out.println("-----------------------------");
         multithreadedProgram(array);
 
+        SwingUtilities.invokeLater(() -> {
+            Chart example = new Chart("График работы программы");
+            example.setSize(800, 400);
+            example.setLocationRelativeTo(null);
+            example.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+            example.setVisible(true);
+        });
     }
+
 
     public static void singleThreadSolution(int[] array) {
         long start = System.currentTimeMillis();
@@ -45,13 +54,6 @@ public class Main {
         System.out.println("Затрачено времени: " + (end - start) + " мс");
     }
 
-    public static int recursionSum(int[] array, int currentNumber, int result) {
-        if (currentNumber == array.length) {
-            return result;
-        }
-        result += array[currentNumber];
-        return recursionSum(array, ++currentNumber, result);
-    }
 
 
     public static int[] initArray(int arraySize) {
