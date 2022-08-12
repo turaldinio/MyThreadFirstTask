@@ -5,39 +5,26 @@ import java.util.concurrent.*;
 
 public class Main {
 
-    public static void main(String[] args) {
-//        int[] array = initArray(10);
-//        System.out.println("входные данные: массив из 1 млн элементов.");
-//
-//        System.out.println("-----------------------------");
-//        singleThreadSolution(array);
-//        System.out.println("-----------------------------");
-//        multithreadedProgram(array);
-
-
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
         Chart chart = new Chart(
                 "visualization",
                 "Single-thread vs multithreading");
 
         chart.pack();
         chart.setVisible(true);
-    chart.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-    }
+        chart.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
-//        SwingUtilities.invokeLater(() -> {
-//            Chart example = new Chart("График работы программы");
-//            example.setSize(800, 400);
-//            example.setLocationRelativeTo(null);
-//            example.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-//            example.setVisible(true);
-//        });
+
+    }
 
 
     public static int singleThreadSolution(int[] array) {
         long start = System.currentTimeMillis();
         System.out.println("Не многопоточная программа:");
-        System.out.println("сумма элементов: " + sum(array));
-        System.out.println("среднее арифметическое: " + arithmeticMean(array));
+//        System.out.println("сумма элементов: " + sum(array));
+//        System.out.println("среднее арифметическое: " + arithmeticMean(array));
+        sum(array);
+        arithmeticMean(array);
         long end = System.currentTimeMillis();
         System.out.println("Затрачено времени: " + (end - start) + " мс");
         System.out.println("-----------------------------");
@@ -45,22 +32,42 @@ public class Main {
         return (int) (end - start);
     }
 
+    public static int multithreadedProgramRunnable(int[] array) {
+        long start = System.currentTimeMillis();
+        System.out.println("Многопоточная программа Runnable:");
+
+        new Thread(() -> {
+            sum(array);
+        }).start();
+
+        new Thread(() -> {
+            arithmeticMean(array);
+        }).start();
+
+        long end = System.currentTimeMillis();
+        System.out.println(end - start);
+        System.out.println("-----------------------------");
+
+        return (int) (end - start);
+    }
+
     public static int multithreadedProgram(int[] array) {
         long start = System.currentTimeMillis();
-        System.out.println("Многопоточная программа:");
+        System.out.println("Многопоточная программа Callable:");
 
 
-        ExecutorService executorService = Executors.newFixedThreadPool(5);
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
         Future<Integer> future = executorService.submit(() -> sum(array));
         Future<Double> doubleFuture = executorService.submit(() -> arithmeticMean(array));
 
         try {
-            System.out.println("сумма элементов: " + future.get());
-
-            System.out.println("среднее арифметическое: " + doubleFuture.get());
-        } catch (InterruptedException | ExecutionException e) {
+            future.get();
+            doubleFuture.get();
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
+        //   System.out.println("сумма элементов: " + future.get());
+        //System.out.println("среднее арифметическое: " + doubleFuture.get());
         long end = System.currentTimeMillis();
         executorService.shutdown();
         System.out.println("Затрачено времени: " + (end - start) + " мс");
