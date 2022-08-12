@@ -14,8 +14,6 @@ public class Main {
         chart.setVisible(true);
         chart.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
-
-
     }
 
 
