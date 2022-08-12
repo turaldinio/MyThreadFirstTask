@@ -21,6 +21,7 @@ public class Main {
 
         chart.pack();
         chart.setVisible(true);
+    chart.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     }
 
 //        SwingUtilities.invokeLater(() -> {
@@ -39,6 +40,8 @@ public class Main {
         System.out.println("среднее арифметическое: " + arithmeticMean(array));
         long end = System.currentTimeMillis();
         System.out.println("Затрачено времени: " + (end - start) + " мс");
+        System.out.println("-----------------------------");
+
         return (int) (end - start);
     }
 
@@ -47,7 +50,7 @@ public class Main {
         System.out.println("Многопоточная программа:");
 
 
-        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        ExecutorService executorService = Executors.newFixedThreadPool(5);
         Future<Integer> future = executorService.submit(() -> sum(array));
         Future<Double> doubleFuture = executorService.submit(() -> arithmeticMean(array));
 
@@ -61,6 +64,7 @@ public class Main {
         long end = System.currentTimeMillis();
         executorService.shutdown();
         System.out.println("Затрачено времени: " + (end - start) + " мс");
+        System.out.println("-----------------------------");
         return (int) (end - start);
     }
 

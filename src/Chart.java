@@ -10,6 +10,8 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Chart extends JFrame {
 
@@ -17,7 +19,7 @@ public class Chart extends JFrame {
         super(applicationTitle);
         JFreeChart lineChart = ChartFactory.createLineChart(
                 chartTitle,
-                "Time, ms", "arraySize",
+                "arraySize", "Time, ms",
                 createDataset(),
                 PlotOrientation.VERTICAL,
                 true, true, false);
@@ -25,20 +27,31 @@ public class Chart extends JFrame {
         ChartPanel chartPanel = new ChartPanel(lineChart);
         chartPanel.setPreferredSize(new java.awt.Dimension(560, 367));
         setContentPane(chartPanel);
+
     }
 
     private DefaultCategoryDataset createDataset() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
-        for (int a = 1; a <= 1_000_000; a *= 10) {
-            int[] array = Main.initArray(a);
-            dataset.addValue(a, "single", String.valueOf(Main.singleThreadSolution(array)));
-        }
+        AtomicInteger atomicInteger = new AtomicInteger(1);
+
+//        while (atomicInteger.get() < 1_000_001) {
+//            int[] array = Main.initArray(atomicInteger.get());
+//            dataset.addValue(atomicInteger.get(), "single", String.valueOf(Main.singleThreadSolution(array)));
+//            dataset.addValue(atomicInteger.get(), "multithreading", String.valueOf(Main.multithreadedProgram(array)));
+//            atomicInteger.set(atomicInteger.get() * 10);
+//        }
 
         for (int a = 1; a <= 1_000_000; a *= 10) {
             int[] array = Main.initArray(a);
-            dataset.addValue(a, "multithreading", String.valueOf(Main.multithreadedProgram(array)));
+            dataset.addValue(Main.singleThreadSolution(array), "single", String.valueOf(a));
+            dataset.addValue(Main.multithreadedProgram(array), "multithreading", String.valueOf(a));
         }
+
+//        for (int a = 1; a <= 1_000_000; a *= 10) {
+//            int[] array = Main.initArray(a);
+//            dataset.addValue(a, "multithreading", String.valueOf(Main.multithreadedProgram(array)));
+//        }
 
 
         return dataset;
