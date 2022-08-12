@@ -7,6 +7,6 @@
 2. Для удобства сравнения результатов работы программы, результат выводится на экран в виде графиков
 
 
-![](../Desktop/graph of the speed of multithreaded and single-threaded programs.png)
+![graph of the speed of multithreaded and single-threaded programs](https://user-images.githubusercontent.com/65041919/184407593-37efd47e-d10c-40e5-b65d-73f304afba44.png)
 
 </h3>
