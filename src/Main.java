@@ -1,9 +1,11 @@
 import javax.swing.*;
+import java.io.File;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.*;
 
 public class Main {
+    private static File logFile = new File("lofFile.txt");
 
     public static void main(String[] args) {
         Chart chart = new Chart(
@@ -18,42 +20,50 @@ public class Main {
 
 
     public static int singleThreadSolution(int[] array) {
+        LogWriter writer = LogWriter.getInstance();
         long start = System.currentTimeMillis();
-        System.out.println("Не многопоточная программа:");
-//        System.out.println("сумма элементов: " + sum(array));
-//        System.out.println("среднее арифметическое: " + arithmeticMean(array));
         sum(array);
         arithmeticMean(array);
         long end = System.currentTimeMillis();
-        System.out.println("Затрачено времени: " + (end - start) + " мс");
-        System.out.println("-----------------------------");
+        writer.writeLog("Не многопоточная программа", array.length, (int) (end - start));
+
 
         return (int) (end - start);
     }
 
     public static int multithreadedProgramRunnable(int[] array) {
+        LogWriter writer = LogWriter.getInstance();
         long start = System.currentTimeMillis();
-        System.out.println("Многопоточная программа Runnable:");
 
-        new Thread(() -> {
+        Thread first = new Thread(() -> {
             sum(array);
-        }).start();
+        });
 
-        new Thread(() -> {
+        Thread second = new Thread(() -> {
             arithmeticMean(array);
-        }).start();
+        });
+
+        first.start();
+        second.start();
+
+        try {
+            first.join();
+            second.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         long end = System.currentTimeMillis();
-        System.out.println(end - start);
-        System.out.println("-----------------------------");
+
+        writer.writeLog("Многопоточная программа (Runnable)", array.length, (int) (end - start));
+
 
         return (int) (end - start);
     }
 
     public static int multithreadedProgram(int[] array) {
+        LogWriter writer = LogWriter.getInstance();
         long start = System.currentTimeMillis();
-        System.out.println("Многопоточная программа Callable:");
-
 
         ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
         Future<Integer> future = executorService.submit(() -> sum(array));
@@ -65,12 +75,11 @@ public class Main {
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
-        //   System.out.println("сумма элементов: " + future.get());
-        //System.out.println("среднее арифметическое: " + doubleFuture.get());
         long end = System.currentTimeMillis();
         executorService.shutdown();
-        System.out.println("Затрачено времени: " + (end - start) + " мс");
-        System.out.println("-----------------------------");
+
+        writer.writeLog("Многопоточная программа (Callable)", array.length, (int) (end - start));
+
         return (int) (end - start);
     }
 
